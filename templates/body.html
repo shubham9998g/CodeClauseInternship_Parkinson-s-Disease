@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parkinson's Disease Detection</title>
+    <link rel="stylesheet" href="fParkinson's Disease Detection\flask\style.css">
+    <!-- <style>
+        /* Import Google Fonts - Poppins */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background:linear-gradient(135deg, #6dd5fa, #2980b9);
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color:rgb(255, 255, 255)  ;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .form-group {
+            flex: 1 1 calc(20% - 10px);
+            /* Five items per row */
+            min-width: 160px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            z-index: 2;
+            color: #f0ebeb;
+        }
+
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            align-self: center;
+            width: 200px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .result h3 {
+            color: rgb(251, 253, 251);
+            font-size: 20px;
+        }
+    </style> -->
+<style>
+    /* Import Google Fonts - Inter */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(to bottom right, #e0f7fa, #b3e5fc); /* Soft blue gradient background */
+        display: flex;
+        flex-direction: column; /* Stack container and result vertically */
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        color: #333; /* Darker text for readability on light background */
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+
+    .container {
+        max-width: 800px; /* Adjusted max-width for slightly narrower form */
+        width: 100%;
+        background: #ffffff; /* White background for a clean look */
+        border-radius: 12px; /* Rounded corners */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        padding: 30px;
+        box-sizing: border-box;
+        margin-bottom: 30px; /* Space between container and result */
+    }
+
+    h1 {
+        text-align: center;
+        color: #0288d1; /* A moderate blue for headings */
+        margin-bottom: 25px;
+        font-size: 2em;
+        font-weight: 700;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px; /* Space between form rows */
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 15px; /* Space between form groups in a row */
+    }
+
+    .form-group {
+        flex: 1 1 calc(33.333% - 10px); /* Default: Three items per row */
+        min-width: 120px; /* Minimum width for smaller screens */
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
+
+    .form-group label {
+        display: block; /* Ensure label takes full width */
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555; /* Slightly darker gray for labels */
+        font-size: 0.9em;
+    }
+
+    .form-group input {
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1em;
+        color: #333;
+        transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+        border-color: #03a9f4; /* Lighter blue on focus */
+        box-shadow: 0 0 5px rgba(3, 169, 244, 0.5); /* Subtle blue glow */
+        outline: none; /* Remove default outline */
+    }
+
+    button {
+        margin-top: 25px;
+        padding: 12px 25px;
+        background-color: #03a9f4; /* Primary blue color */
+        border: none;
+        border-radius: 25px; /* Rounded button */
+        color: white;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        align-self: center; /* Center the button */
+        min-width: 150px; /* Ensure a minimum button width */
+        transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    button:hover {
+        background-color: #0288d1; /* Darker blue on hover */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* More prominent shadow on hover */
+    }
+
+    button:active {
+        background-color: #01579b; /* Even darker blue on active */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .result {
+        text-align: center;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .result h1 {
+        color: #0288d1;
+        margin-bottom: 15px;
+        font-size: 1.8em;
+    }
+
+    .result h3 {
+        color: #333;
+        font-size: 1.2em;
+        margin: 0; /* Remove default margin for h3 */
+    }
+
+    /* --- Responsive Adjustments --- */
+
+    @media (max-width: 768px) {
+        .container, .result {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            flex: 1 1 calc(50% - 8px); /* Two items per row on tablets */
+        }
+
+        button {
+            width: 100%; /* Full width button on smaller screens */
+            max-width: 200px; /* Limit max width for aesthetics */
+        }
+
+        .result h1 {
+            font-size: 1.5em;
+        }
+
+        .result h3 {
+            font-size: 1em;
+        }
+    }
+
+    @media (max-width: 480px) {
+        body {
+            padding: 15px;
+        }
+
+        .container, .result {
+            padding: 15px;
+        }
+
+        h1 {
+            font-size: 1.5em;
+        }
+
+        .form-row {
+            flex-direction: column; /* Stack form groups on mobile */
+            gap: 10px;
+        }
+
+        .form-group {
+            flex: 1 1 100%;
+            min-width: unset;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 0.9em;
+            max-width: 150px;
+        }
+
+        .result h1 {
+            font-size: 1.3em;
+        }
+
+        .result h3 {
+            font-size: 0.9em;
+        }
+    }
+</style>
+
+
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Parkinson's Disease Detection</h1>
+        <form action="/submit" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="input1">MDVP:Fo(Hz):</label>
+                    <input type="text" id="input1" name="input1" required>
+                </div>
+                <div class="form-group">
+                    <label for="input2">MDVP:Fhi(Hz):</label>
+                    <input type="text" id="input2" name="input2" required>
+                </div>
+                <div class="form-group">
+                    <label for="input3">MDVP:Flo(Hz):</label>
+                    <input type="text" id="input3" name="input3" required>
+                </div>
+                <div class="form-group">
+                    <label for="input4">MDVP:Jitter(%):</label>
+                    <input type="text" id="input4" name="input4" required>
+                </div>
+                <div class="form-group">
+                    <label for="input5">MDVP:Shimmer:</label>
+                    <input type="text" id="input5" name="input5" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="input6">NHR:</label>
+                    <input type="text" id="input6" name="input6" required>
+                </div>
+                <div class="form-group">
+                    <label for="input7">HNR:</label>
+                    <input type="text" id="input7" name="input7" required>
+                </div>
+                <div class="form-group">
+                    <label for="input8">RPDE:</label>
+                    <input type="text" id="input8" name="input8" required>
+                </div>
+                <div class="form-group">
+                    <label for="input9">DFA:</label>
+                    <input type="text" id="input9" name="input9" required>
+                </div>
+                <div class="form-group">
+                    <label for="input10">PPE:</label>
+                    <input type="text" id="input10" name="input10" required>
+                </div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+
+    </div>
+    <div class="result">
+        <h1>Prediction Result</h1>
+        {% if prediction_text %}
+        <h3>{{ prediction_text }}</h3>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>
