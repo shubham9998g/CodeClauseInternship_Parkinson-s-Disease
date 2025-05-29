@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 import os
 app = Flask(__name__)
-model=pickle.load(open('flask/parkinson_model.pkl', 'rb'))
+model=pickle.load(open('parkinson_model.pkl', 'rb'))
 @app.route('/')
 def home():
     return render_template('body.html')
